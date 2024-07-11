@@ -1,0 +1,632 @@
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.util.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+public class OrderInformation {
+    private String orderId;
+    private String itemName;
+    private double itemPrice;
+    private int quantity;
+    private Date orderTime;
+
+    // Time format for parsing and formatting the time string
+    private static final SimpleDateFormat TIME_FORMAT = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy");
+
+    // Constructor without parameters
+    public OrderInformation() {
+        orderId = "";
+        itemName = "";
+        itemPrice = 0.0;
+        quantity = 0;
+    }
+
+    // Constructor with parameters
+    public OrderInformation(String orderId, String itemName, double itemPrice, int quantity, String orderTime) {
+        this.orderId = orderId;
+        this.itemName = itemName;
+        this.itemPrice = itemPrice;
+        this.quantity = quantity;
+        this.orderTime = parseTime(orderTime);
+    }
+
+    // Getter and Setter methods
+    public String getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(String orderId) {
+        this.orderId = orderId;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public double getItemPrice() {
+        return itemPrice;
+    }
+
+    public void setItemPrice(double itemPrice) {
+        this.itemPrice = itemPrice;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public Date getOrderTime() {
+        return orderTime;
+    }
+
+    public void setOrderTime(String orderTime) {
+        this.orderTime = parseTime(orderTime);
+    }
+
+    // Method to parse time from String to Date
+    private Date parseTime(String time) {
+        try {
+            return TIME_FORMAT.parse(time);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+    // Method to format order time as a string
+    public String formatOrderTime() {
+        return TIME_FORMAT.format(orderTime);
+    }
+
+    // Display order information
+    @Override
+    public String toString() {
+        return "Order ID: " + orderId + "\n" +
+               "Item Name: " + itemName + "\n" +
+               "Item Price: $" + itemPrice + "\n" +
+               "Quantity: " + quantity + "\n" +
+               "Order Time: " + formatOrderTime() + "\n";
+    }
+}
+
+
+
+
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class CustomerInformation {
+    private String custId;
+    private String custName;
+    private int tableNumber;
+    private double totalPayment;
+    private List<OrderInformation> orders;
+
+    public CustomerInformation(String custId, String custName, int tableNumber, double totalPayment) {
+        this.custId = custId;
+        this.custName = custName;
+        this.tableNumber = tableNumber;
+        this.totalPayment = totalPayment;
+        this.orders = new ArrayList<>();
+    }
+
+    public String getCustId() {
+        return custId;
+    }
+
+    public String getCustName() {
+        return custName;
+    }
+
+    public int getTableNumber() {
+        return tableNumber;
+    }
+
+    public double getTotalPayment() {
+        return totalPayment;
+    }
+
+    public List<OrderInformation> getOrders() {
+        return orders;
+    }
+
+    public void addOrder(OrderInformation order) {
+        orders.add(order);
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Customer ID: ").append(custId).append("\n");
+        sb.append("Customer Name: ").append(custName).append("\n");
+        sb.append("Table Number: ").append(tableNumber).append("\n");
+        sb.append("Total Payment: ").append(totalPayment).append("\n");
+        sb.append("Orders: ").append("\n");
+        for (OrderInformation order : orders) {
+            sb.append(order.toString()).append("\n");
+        }
+        return sb.toString();
+    }
+}
+
+
+
+
+import java.util.LinkedList;
+
+public class Queue {
+    private LinkedList<CustomerInformation> queue;
+
+    // Constructor
+    public Queue() {
+        queue = new LinkedList<>();
+    }
+
+    // Method to enqueue a customer
+    public void enqueue(CustomerInformation customer) {
+        queue.addLast(customer);
+    }
+
+    // Method to dequeue a customer
+    public CustomerInformation dequeue() {
+        if (!isEmpty()) {
+            return queue.removeFirst();
+        } else {
+            System.out.println("Queue is empty!");
+            return null;
+        }
+    }
+
+    // Method to check if the queue is empty
+    public boolean isEmpty() {
+        return queue.isEmpty();
+    }
+
+    // Method to get the size of the queue
+    public int size() {
+        return queue.size();
+    }
+
+    // Method to get the first customer in the queue without removing them
+    public CustomerInformation front() {
+        if (!isEmpty()) {
+            return queue.getFirst();
+        } else {
+            System.out.println("Queue is empty!");
+            return null;
+        }
+    }
+
+    // Display the contents of the queue
+    public void displayQueue() {
+        System.out.println("Queue Contents:");
+        for (CustomerInformation customer : queue) {
+            System.out.println(customer);
+        }
+    }
+}
+
+
+
+
+import javax.swing.*;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+
+public class WelcomePage {
+    private JFrame frame;
+    private JPanel panel;
+    private JLabel titleLabel;
+    private JButton startButton;
+
+    public WelcomePage() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame("Restaurant Manager");
+        frame.setSize(800, 700);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        panel = new JPanel();
+        panel.setLayout(null);
+
+        titleLabel = new JLabel();
+        titleLabel.setBounds(150, 80, 700, 60);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 24));
+        panel.add(titleLabel);
+
+        startButton = new JButton("Start");
+        startButton.setBounds(550, 700, 400, 70);
+        startButton.setFont(new Font("Arial", Font.BOLD, 34));
+        startButton.setBackground(new Color(144, 238, 144));
+        startButton.setForeground(Color.BLACK);
+        startButton.setFocusPainted(false);
+        startButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                frame.dispose();
+                SwingUtilities.invokeLater(new Runnable() {
+                    public void run() {
+                        new RestaurantManager();
+                    }
+                });
+            }
+        });
+        panel.add(startButton);
+
+        ImageIcon icon = new ImageIcon("C:\\Users\\user\\OneDrive\\SWC LAB SESSION\\JAVA practices\\Jihah\\gambar SWC PROJECTTT.jpg");
+        JLabel imageLabel = new JLabel(icon);
+        imageLabel.setBounds(200, 100, icon.getIconWidth(), icon.getIconHeight());
+        panel.add(imageLabel);
+
+        frame.add(panel);
+        frame.setVisible(true);
+    }
+
+    public static void main(String[] args) {
+        SwingUtilities.invokeLater(new Runnable() {
+            public void run() {
+                new WelcomePage();
+            }
+        });
+    }
+}
+
+
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.*;
+import java.io.*;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Queue;
+import java.util.Stack;
+import java.util.StringTokenizer;
+import java.util.LinkedList;
+
+public class RestaurantManager {
+    private JFrame frame;
+    private JPanel mainPanel, counterPanel1, counterPanel2, counterPanel3;
+    private JButton showDataButton, addCustomerButton, nextQueueButton, recordButton;
+    private JLabel countLabel;
+    private Queue<CustomerInformation> queueCounter1 = new LinkedList<>();
+    private Queue<CustomerInformation> queueCounter2 = new LinkedList<>();
+    private Queue<CustomerInformation> queueCounter3 = new LinkedList<>();
+    private Stack<CustomerInformation> completeStack = new Stack<>();
+    private int customerCount = 0;
+
+    public RestaurantManager() {
+        initialize();
+    }
+
+    private void initialize() {
+        frame = new JFrame("Ticket and Counter System");
+        frame.setSize(800, 600);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+        mainPanel = new JPanel() {
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                ImageIcon background = new ImageIcon("background.jpg");
+                g.drawImage(background.getImage(), 0, 0, getWidth(), getHeight(), this);
+            }
+        };
+        mainPanel.setLayout(new BorderLayout());
+
+        JPanel buttonPanel = new JPanel(new BorderLayout());
+        buttonPanel.setBackground(new Color(173, 216, 230));
+
+        JPanel topPanel = new JPanel();
+        topPanel.setBackground(new Color(135, 206, 250));
+        countLabel = new JLabel("Count: " + customerCount);
+        countLabel.setFont(new Font("Arial", Font.BOLD, 16));
+        topPanel.add(countLabel);
+
+        JPanel buttonsPanel = new JPanel();
+        buttonsPanel.setBackground(new Color(240, 255, 255));
+
+        showDataButton = new JButton("Show Data");
+        addCustomerButton = new JButton("Add New Customer");
+        nextQueueButton = new JButton("Next Queue");
+
+        showDataButton.setBackground(new Color(255, 182, 193));
+        addCustomerButton.setBackground(new Color(152, 251, 152));
+        nextQueueButton.setBackground(new Color(255, 255, 224));
+
+        showDataButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    showData();
+                }
+            });
+
+        addCustomerButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    addNewCustomers();
+                }
+            });
+
+        nextQueueButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    nextQueue();
+                }
+            });
+
+        buttonsPanel.add(showDataButton);
+        buttonsPanel.add(addCustomerButton);
+        buttonsPanel.add(nextQueueButton);
+
+        buttonPanel.add(topPanel, BorderLayout.NORTH);
+        buttonPanel.add(buttonsPanel, BorderLayout.CENTER);
+
+        mainPanel.add(buttonPanel, BorderLayout.NORTH);
+
+        JPanel countersPanel = new JPanel(new GridLayout(1, 3));
+        countersPanel.setBackground(new Color(240, 248, 255));
+
+        counterPanel1 = new JPanel(new BorderLayout());
+        counterPanel1.setBackground(new Color(255, 228, 225));
+        counterPanel2 = new JPanel(new BorderLayout());
+        counterPanel2.setBackground(new Color(224, 255, 255));
+        counterPanel3 = new JPanel(new BorderLayout());
+        counterPanel3.setBackground(new Color(240, 255, 240));
+
+        countersPanel.add(counterPanel1);
+        countersPanel.add(counterPanel2);
+        countersPanel.add(counterPanel3);
+
+        mainPanel.add(countersPanel, BorderLayout.CENTER);
+
+        processQueue(counterPanel1, queueCounter1, "Counter 1");
+        processQueue(counterPanel2, queueCounter2, "Counter 2");
+        processQueue(counterPanel3, queueCounter3, "Counter 3");
+
+        JPanel bottomPanel = new JPanel();
+        bottomPanel.setBackground(new Color(240, 255, 255));
+        recordButton = new JButton("Record");
+        recordButton.setPreferredSize(new Dimension(600, 40));
+        recordButton.setBackground(new Color(255, 239, 213));
+        recordButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    showRecord();
+                }
+            });
+        bottomPanel.add(recordButton);
+
+        mainPanel.add(bottomPanel, BorderLayout.SOUTH);
+
+        frame.add(mainPanel);
+        frame.setVisible(true);
+    }
+
+    private void showData() {
+        JTextArea textArea = new JTextArea(40, 100);
+        textArea.setEditable(false);
+        textArea.append("Customer Data:\n\n");
+
+        Queue<CustomerInformation>[] queues = new Queue[]{queueCounter1, queueCounter2, queueCounter3};
+        for (int i = 0; i < queues.length; i++) {
+            Queue<CustomerInformation> queue = queues[i];
+            textArea.append("Counter " + (i + 1) + ":\n");
+            Queue<CustomerInformation> tempQueue = new LinkedList<>();
+            while (!queue.isEmpty()) {
+                CustomerInformation customer = queue.poll();
+                tempQueue.add(customer);
+                textArea.append(customer.toString() + "\n");
+                textArea.append("჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻჻\n");
+            }
+            queue.addAll(tempQueue);
+            textArea.append("\n");
+        }
+
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        scrollPane.setPreferredSize(new Dimension(500, 700));
+
+        JOptionPane.showMessageDialog(frame, scrollPane, "Customer Data", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void addNewCustomers() {
+        try (BufferedReader in = new BufferedReader(new FileReader("customerList.txt"))) {
+            String line;
+            while ((line = in.readLine()) != null && customerCount < 100) {
+                processCustomerData(line);
+                customerCount++;
+            }
+            JOptionPane.showMessageDialog(frame, "100 New customers added successfully.");
+            updateCountLabel();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void processCustomerData(String data) {
+        StringTokenizer st = new StringTokenizer(data, ";");
+        if (st.countTokens() >= 4) {
+            String custId = st.nextToken();
+            String custName = st.nextToken();
+            int tableNumber = Integer.parseInt(st.nextToken());
+            double totalPayment = Double.parseDouble(st.nextToken());
+
+            CustomerInformation customer = new CustomerInformation(custId, custName, tableNumber, totalPayment);
+
+            while (st.hasMoreTokens()) {
+                String orderId = st.nextToken();
+                String itemName = st.nextToken();
+                double itemPrice = Double.parseDouble(st.nextToken());
+                int quantity = Integer.parseInt(st.nextToken());
+                String orderTime = st.nextToken();
+
+                OrderInformation order = new OrderInformation(orderId, itemName, itemPrice, quantity, orderTime);
+                customer.addOrder(order);
+            }
+
+            if (customer.getOrders().size() <= 5) {
+                if (queueCounter1.size() <= queueCounter2.size()) {
+                    queueCounter1.add(customer);
+                } else {
+                    queueCounter2.add(customer);
+                }
+            } else {
+                queueCounter3.add(customer);
+            }
+        }
+    }
+
+    private void nextQueue() {
+        processQueue(counterPanel1, queueCounter1, "Counter 1");
+        processQueue(counterPanel2, queueCounter2, "Counter 2");
+        processQueue(counterPanel3, queueCounter3, "Counter 3");
+    }
+
+    private void processQueue(JPanel panel, Queue<CustomerInformation> queue, String counterName) {
+        panel.removeAll();
+        panel.setLayout(new BorderLayout());
+
+        JTextArea textArea = new JTextArea(20, 30);
+        textArea.setEditable(false);
+        textArea.append("Customers at " + counterName + ":\n\n");
+
+        Queue<CustomerInformation> tempQueue = new LinkedList<>();
+        while (!queue.isEmpty()) {
+            CustomerInformation customer = queue.poll();
+            tempQueue.add(customer);
+            textArea.append(customer.toString() + "\n");
+            textArea.append("==========================================================\n");
+        }
+        queue.addAll(tempQueue);
+
+        panel.add(new JScrollPane(textArea), BorderLayout.CENTER);
+
+        JPanel buttonPanel = new JPanel();
+        buttonPanel.setLayout(new GridLayout(1, 2));
+        buttonPanel.setBackground(new Color(240, 248, 255));
+
+        JButton paymentButton = new JButton("Payment");
+        paymentButton.setBackground(new Color(173, 216, 230));
+        paymentButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    handlePayment(queue, counterName);
+                }
+            });
+        buttonPanel.add(paymentButton);
+
+        JButton receiptButton = new JButton("Receipt");
+        receiptButton.setBackground(new Color(255, 222, 173));
+        receiptButton.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    showReceipt(queue, counterName);
+                }
+            });
+        buttonPanel.add(receiptButton);
+
+        panel.add(buttonPanel, BorderLayout.SOUTH);
+
+        panel.revalidate();
+        panel.repaint();
+    }
+
+    private void showReceipt(Queue<CustomerInformation> queue, String counterName) {
+        JTextArea receiptArea = new JTextArea(100, 50);
+        receiptArea.setEditable(false);
+        receiptArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+        receiptArea.append("Receipt for " + counterName + ":\n\n");
+        receiptArea.append("────── ･ ｡ﾟ☆: .?🍔🍫☕🥩🍰🍜🧋🍨 .:☆ﾟ. ──────\n");
+
+        Queue<CustomerInformation> tempQueue = new LinkedList<>();
+        double totalPayment = 0.0;
+
+        while (!queue.isEmpty()) {
+            CustomerInformation customer = queue.poll();
+            tempQueue.add(customer);
+            receiptArea.append(customer.toString() + "\n");
+            for (OrderInformation order : customer.getOrders()) {
+                totalPayment += order.getItemPrice() * order.getQuantity();
+            }
+            receiptArea.append("────── ･ ｡ﾟ☆: .?🍔🍫☕🥩🍰🍜🧋🍨 .:☆ﾟ. ──────\n");
+        }
+
+        receiptArea.append("\nTotal Payment: $" + new DecimalFormat("#.##").format(totalPayment));
+
+        queue.addAll(tempQueue);
+
+        JOptionPane.showMessageDialog(frame, new JScrollPane(receiptArea), "Receipt", JOptionPane.PLAIN_MESSAGE);
+    }
+
+    private void showRecord() {
+    JTextArea textArea = new JTextArea(100, 50);
+    textArea.setEditable(false);
+    textArea.setFont(new Font("Monospaced", Font.PLAIN, 12));
+    textArea.append("ALL CUSTOMER DATA:\n\n");
+    textArea.append("◦◦,°.✽✦✽.◦.✽✦✽.°,◦◦◦◦,°.✽✦✽.◦.✽✦✽.°,◦◦\n");
+
+    Queue<CustomerInformation>[] queues = new Queue[]{queueCounter1, queueCounter2, queueCounter3};
+    for (int i = 0; i < queues.length; i++) {
+        Queue<CustomerInformation> queue = queues[i];
+        textArea.append("Counter " + (i + 1) + ":\n");
+        Queue<CustomerInformation> tempQueue = new LinkedList<>();
+        while (!queue.isEmpty()) {
+            CustomerInformation customer = queue.poll();
+            tempQueue.add(customer);
+            textArea.append(customer.toString() + "\n");
+            textArea.append("◦◦,°.✽✦✽.◦.✽✦✽.°,◦◦◦◦,°.✽✦✽.◦.✽✦✽.°,◦◦\n");
+        }
+        queue.addAll(tempQueue);
+        textArea.append("\n");
+    }
+
+    textArea.append("Completed Customers:\n");
+    for (CustomerInformation customer : completeStack) {
+        textArea.append(customer.toString() + "\n");
+        textArea.append("────── ･ ｡ﾟ☆: .?🍔🍫☕🥩🍰🍜🧋🍨 .:☆ﾟ. ──────\n");
+    }
+
+    JOptionPane.showMessageDialog(frame, new JScrollPane(textArea), "Customer Record", JOptionPane.PLAIN_MESSAGE);
+}
+
+    private void handlePayment(Queue<CustomerInformation> queue, String counterName) {
+        if (!queue.isEmpty()) {
+            CustomerInformation customer = queue.poll();
+            completeStack.push(customer);
+            JOptionPane.showMessageDialog(frame, "Customer " + customer.getCustId() + " from " + counterName + " completed payment.");
+            updateCountLabel();
+        } else {
+            JOptionPane.showMessageDialog(frame, counterName + " queue is empty.");
+        }
+        processQueue(counterPanel1, queueCounter1, "Counter 1");
+        processQueue(counterPanel2, queueCounter2, "Counter 2");
+        processQueue(counterPanel3, queueCounter3, "Counter 3");
+    }
+
+    private void updateCountLabel() {
+        countLabel.setText("Count: " + customerCount);
+    }
+
+    public static void main(String[] args) {
+        EventQueue.invokeLater(new Runnable() {
+                public void run() {
+                    try {
+                        RestaurantManager window = new RestaurantManager();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                }
+            });
+    }
+}
